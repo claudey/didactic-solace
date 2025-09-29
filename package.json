@@ -2,7 +2,6 @@
 	"name": "gpp-landing",
 	"private": true,
 	"version": "0.0.1",
-	"packageManager": "yarn@1.22.22",
 	"type": "module",
 	"engines": {
 		"node": ">=18.17.1 <19.0.0"
