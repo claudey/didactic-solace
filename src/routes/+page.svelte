@@ -4,6 +4,7 @@
 	let email = '';
 	let submitted = false;
 	let error = '';
+	let loading = false;
 
 	// Array of real estate image URLs (using Unsplash for high-quality images)
 	const realEstateImages = [
@@ -27,23 +28,45 @@
 		return re.test(email);
 	}
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
 		event.preventDefault();
 		error = '';
+		loading = true;
 
 		if (!email) {
 			error = 'Please enter your email address';
+			loading = false;
 			return;
 		}
 
 		if (!validateEmail(email)) {
 			error = 'Please enter a valid email address';
+			loading = false;
 			return;
 		}
 
-		// Here you would typically send the email to your backend
-		console.log('Email submitted:', email);
-		submitted = true;
+		try {
+			const response = await fetch('/api/subscribe', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ email })
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				submitted = true;
+			} else {
+				error = data.error || 'Failed to subscribe. Please try again.';
+			}
+		} catch (err) {
+			console.error('Subscription error:', err);
+			error = 'Network error. Please check your connection and try again.';
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -67,7 +90,9 @@
 							class="email-input"
 							required
 						/>
-						<button type="submit" class="submit-btn">Subscribe</button>
+						<button type="submit" class="submit-btn" disabled={loading}>
+							{loading ? 'Subscribing...' : 'Subscribe'}
+						</button>
 					</div>
 					{#if error}
 						<p class="error-message">{error}</p>
@@ -213,6 +238,13 @@
 
 	.submit-btn:active {
 		transform: translateY(0);
+	}
+
+	.submit-btn:disabled {
+		background: linear-gradient(135deg, #ccc, #999);
+		cursor: not-allowed;
+		transform: none;
+		box-shadow: none;
 	}
 
 	.error-message {

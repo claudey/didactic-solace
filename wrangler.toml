@@ -1,0 +1,12 @@
+name = "gpp-landing"
+compatibility_date = "2024-01-01"
+
+# KV Namespace for storing email subscriptions
+[[kv_namespaces]]
+binding = "EMAILS"
+id = "8b792588877d4cba89164adb96066261"
+preview_id = "your-preview-kv-namespace-id"
+
+# Optional: Add environment variables
+[vars]
+ENVIRONMENT = "production"
